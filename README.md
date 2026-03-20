@@ -45,18 +45,17 @@ To spawn a shell in a running container:
 
 ## Observations
 
-1. curl -s fails silently, so we can't see if it's errored out (add -f)
-2. The Custom 404 page is being pulled from github, no consistency
+1. curl -s fails silently, so we can't see if it's errored out.
+2. The Custom 404 page is being pulled from github. If there github repo were to be removed, it'll cause issues with the custom page.
 3. No health check for docker container
 4. Hardcoded directory path and key name causes consistency issues
 5. Self signed Cert will expire in 30 days, ok for testing and Dev, but will break prod after 30 days
 
 ## Improvements
 1. curl -s has been changed to curl -f
-2. The Custom 404 page is being pulled from github, no consistency
+2. The Custom 404 page is being pulled from the local directory rather than curling from github
 3. Health check added
 4. Added ENV variables for both the nginx directory and key name
-5. 
 
 ## Container startup flow with ENV variables
 
