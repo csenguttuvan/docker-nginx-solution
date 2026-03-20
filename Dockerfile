@@ -9,14 +9,14 @@ RUN mkdir -p ${ERROR_PAGE_DIR}
 # BUG 2: Moved mkdir command above the script file as the 41 script needs the directory to write the output to first
 RUN mkdir -p /etc/nginx/templates
 
-
+COPY 404.html ${ERROR_PAGE_DIR}
 COPY 40-generate-cert.sh /docker-entrypoint.d/
-COPY 41-get-404-page.sh /docker-entrypoint.d/
+# COPY 41-get-404-page.sh /docker-entrypoint.d/
 # COPY nginx.conf /etc/nginx/ - envsubst will now generate nginx.conf from the template
 
 COPY nginx.conf.template /etc/nginx/templates/nginx.conf.template
 
-RUN chmod +x /docker-entrypoint.d/41-get-404-page.sh
+# RUN chmod +x /docker-entrypoint.d/41-get-404-page.sh
 # BUG 3: 41-get-404-page.sh was faiing silentlt due to set -e because the file was not executable.
 
 HEALTHCHECK --interval=30s --timeout=30s --start-period=5s --retries=3 CMD curl -vkl http://localhost || exit 1
