@@ -2,6 +2,8 @@
 
 # This script will fetch the latest 404 custom error page
 
+# Now redundant
+
 set -e
 
 
