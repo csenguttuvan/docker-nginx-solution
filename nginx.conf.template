@@ -1,0 +1,37 @@
+pid /tmp/nginx.pid;
+
+events {
+  worker_connections  1024;
+}
+
+http {
+  server {
+    listen      80; # Handles all incoming traffic on port 80 (HTTP)
+    server_name _; # Catches all, matches any hostname
+
+    return 301 https://$host$request_uri; # Sends a 301 redirect to same host and URI but using https
+  }
+
+  server {
+    listen      443 ssl;
+    server_name _;
+
+# BUG 1: key name mismatch between generate-cert fie and nginx conf file (Corrected)
+    ssl_certificate     ${CERT_NAME}.pem;
+    ssl_certificate_key ${CERT_NAME}.key;
+
+    error_page 404 /404.html; 
+    # the URI is pushed as payload to port 443, we append 404.html at the end
+    location = /404.html {
+      # BUG 4: Needed an internal process to execute, when the catch all location block catches a 404
+      alias ${ERROR_PAGE_DIR}/404.html; # File location on the ngnix server, location =/404.html knows where to serve the file from
+      internal; #
+    }
+    
+    
+
+    location / {
+      return 404;
+    }
+  }
+}
