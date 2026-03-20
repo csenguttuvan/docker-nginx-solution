@@ -36,18 +36,39 @@ To spawn a shell in a running container:
 
 
 
-Bugs Solved:
-# BUG 1: Key name mismatch between generate-cert fie and nginx conf file (Corrected)
+## Bugs Found and solved
 
-# BUG 2: Moved mkdir command above the script file as the 41 script needs the directory to write the output to first
+- BUG 1: Key name mismatch between generate-cert file and nginx conf file. This caused nginx to fail at startup
+- BUG 2: Moved mkdir command above the script file as the 41 script needs the directory to write the output file to
+- BUG 3: 41-get-404-page.sh was faiing silently due to set -e because the file was not executable, so the custom 404 page was not downloaded
+- BUG 4: Needed an internal process to execute, when the general catch all location block catches a 404
 
-# BUG 3: 41-get-404-page.sh was faiing silently due to set -e because the file was not executable.
+## Observations
 
-# BUG 4: Needed an internal process to execute, when the general catch all location block catches a 404
-
-Observations:
 1. curl -s fails silently, so we can't see if it's errored out (add -f)
 2. The Custom 404 page is being pulled from github, no consistency
-3. No health check for docker container (Added)
-4. Perhaps a way to use variable to match up the output directory to the alias directory, if anything changes
-5. Use Env variable for keynames
+3. No health check for docker container
+4. Hardcoded directory path and key name causes consistency issues
+5. Self signed Cert will expire in 30 days, ok for testing and Dev, but will break prod after 30 days
+
+## Improvements
+1. curl -s has been changed to curl -f
+2. The Custom 404 page is being pulled from github, no consistency
+3. Health check added
+4. Added ENV variables for both the nginx directory and key name
+5. 
+
+## Container startup flow with ENV variables
+
+Container starts
+      ↓
+20-envsubst-on-templates.sh runs
+      ↓
+Reads  /etc/nginx/templates/nginx.conf.template
+      ↓
+Replaces ${CERT_NAME} → localhost
+Replaces ${ERROR_PAGE_DIR} → /var/www/nginx/errors
+      ↓
+Outputs to /etc/nginx/nginx.conf  ← because of your ENV override
+      ↓
+nginx starts reading /etc/nginx/nginx.conf ✅
