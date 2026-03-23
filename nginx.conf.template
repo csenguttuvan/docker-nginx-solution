@@ -20,6 +20,9 @@ http {
     ssl_certificate     ${CERT_NAME}.pem;
     ssl_certificate_key ${CERT_NAME}.key;
 
+    #TLS Hardening
+    ssl_protocols TLSv1.2 TLSv1.3;
+
     error_page 404 /404.html; 
     # the URI is pushed as payload to port 443, we append 404.html at the end
     location = /404.html {
