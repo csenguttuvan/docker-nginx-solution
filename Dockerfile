@@ -2,6 +2,7 @@ FROM nginx:1.21
 
 ENV CERT_NAME=localhost
 ENV ERROR_PAGE_DIR=/var/www/nginx/errors
+
 ENV NGINX_ENVSUBST_OUTPUT_DIR=/etc/nginx
 
 

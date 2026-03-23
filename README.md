@@ -50,12 +50,14 @@ To spawn a shell in a running container:
 3. No health check for docker container
 4. Hardcoded directory path and key name causes consistency issues
 5. Self signed Cert will expire in 30 days, ok for testing and Dev, but will break prod after 30 days
+6. SSL Hardening is needed as the bouncer is the entrypoint for the server, so the first surface the internet touches
 
 ## Improvements
 1. curl -s has been changed to curl -f
 2. The Custom 404 page is being pulled from the local directory rather than curling from github
 3. Health check added
 4. Added ENV variables for both the nginx directory and key name
+5. Added TLS Encryption
 
 ## Container startup flow with ENV variables
 
